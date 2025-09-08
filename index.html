@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-<body>
+<body class="bg-[#F0FDF4]">
   <!-- Navbar -->
 <nav class="py-6 px-6 md:px-[135px] max-w-[1920px] mx-auto bg-[#15803D]">
   <div class="flex justify-between items-center">
@@ -90,6 +90,44 @@
   </div>
 </section>
 
+<!-- Choose your trees -->
+<section class="max-w-[1650px] h-auto mt-[100px] px-4 mx-auto">
+  <h1 class="text-2xl md:text-[32px] font-semibold text-center mb-10">Choose Your Trees</h1>
+  <div class="flex flex-col md:flex-row gap-6">
+    
+    <!-- Categories -->
+    <div id="categories" class="flex flex-col gap-2 justify-start items-start md:w-[220px]">
+      <h1 class="text-lg md:text-[20px] font-bold mb-2">Categories</h1>
+    </div>
+
+    <!-- Cards Section -->
+    <div id="cards-container" class="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6"></div>
+
+    <!--your Cart -->
+    <div class="w-full md:w-[250px] bg-white rounded-2xl">
+      <div class="p-4 flex flex-col items-start">
+        <h1 class="font-semibold mb-4">Your Cart</h1>
+        <div id="cart-items" class="flex flex-col gap-3 w-full"></div>
+        <div id="cart-total" class="mt-4 font-bold flex justify-between w-full hidden">
+            <span>Total:</span>
+            <span id="cart-amount">৳ 0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Modal view section -->
+
+<section>
+    <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+  <div id="overlay" class="absolute inset-0 bg-black opacity-40 backdrop-blur-sm"></div>
+  <div class="relative z-10 mx-auto w-[90%] max-w-md bg-white rounded-lg shadow-lg p-6">
+    <button id="closeModal" class="absolute top-2 right-3 text-gray-800 hover:text-gray-900 text-3xl font-bold">&times;</button>
+    <div id="modalContent" class="flex flex-col gap-4"></div>
+  </div>
+</div>
+</section>
 
   <script src="script.js"></script>
 </body>
