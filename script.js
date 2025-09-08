@@ -11,13 +11,11 @@ const cardsContainer = document.getElementById("cards-container");
 const categoriesContainer = document.getElementById("categories");
 const modal = document.getElementById("modal");
 const modalContent = document.getElementById("modalContent");
-const closeModal = document.getElementById("closeModal");
 const cartItemsContainer = document.getElementById("cart-items");
-const cartTotal = document.getElementById("cart-total").querySelector("span:last-child");
 
 let cart = {};
 
-// total categories
+// Categories list
 const categoryList = [
   { id: "all", name: "All Trees" },
   { id: 1, name: "Fruit Trees" },
@@ -32,13 +30,12 @@ const categoryList = [
   { id: 10, name: "Aquatic Plants" },
 ];
 
-// Categories
+// Load Categories
 function loadCategories() {
   categoryList.forEach((cat, index) => {
     const btn = document.createElement("button");
     btn.innerText = cat.name;
     btn.className = "category-btn px-3 py-2 rounded text-[#000000] transition-all duration-300 w-full md:w-[200px] text-left hover:bg-green-200";
-
     if (index === 0) btn.classList.add("bg-green-700", "text-white");
 
     btn.addEventListener("click", () => {
@@ -73,7 +70,7 @@ async function loadPlantsByCategory(id) {
   }
 }
 
-// Display plants
+// display plants
 function displayPlants(plants) {
   cardsContainer.innerHTML = "";
   if (!plants || plants.length === 0) {
@@ -88,7 +85,7 @@ function displayPlants(plants) {
     card.innerHTML = `
       <img src="${plant.image}" alt="${plant.name}" class="w-full h-48 sm:h-52 object-cover rounded-t-lg">
       <div class="flex-1 flex flex-col p-4 gap-2">
-        <h1 class="font-semibold text-lg">${plant.name}</h1>
+        <h1 class="font-semibold text-center text-lg">${plant.name}</h1>
         <p class="text-[12px] opacity-80 flex-1">${plant.description}</p>
         <div class="flex justify-between items-center mt-2 text-sm">
           <p class="bg-[#DCFCE7] rounded-2xl px-3 py-1">${plant.category}</p>
@@ -104,58 +101,52 @@ function displayPlants(plants) {
       addToCart(plant);
     });
 
-    // Modal view open
-    card.addEventListener("click", e => {
-      if (!e.target.closest("button")) {
-        modalContent.innerHTML = `
-          <img src="${plant.image}" alt="${plant.name}" class="w-full h-48 object-cover rounded-lg">
-          <h1 class="font-bold text-xl">${plant.name}</h1>
-          <p class="text-gray-700">${plant.description}</p>
-          <div class="flex justify-between items-center mt-2 text-sm">
-            <p class="bg-[#DCFCE7] rounded-2xl px-3 py-1">${plant.category}</p>
-            <p><i class="fa-solid fa-bangladeshi-taka-sign"></i> ${plant.price}</p>
-          </div>
-          <button class="w-full h-10 bg-[#166534] text-white rounded mt-2 hover:bg-green-500">Add to Cart</button>
-        `;
-        modal.classList.remove("hidden");
+    // modal view open
+   card.addEventListener("click", e => {
+  if (!e.target.closest("button")) {
+    modalContent.innerHTML = `
+      <h1 class="font-bold text-2xl mb-4">${plant.name}</h1>
+      <img src="${plant.image}" alt="${plant.name}" class="w-full h-60 object-cover rounded-lg mb-4">
+      <p><span class="font-semibold">Category:</span> ${plant.category}</p>
+      <p><span class="font-semibold">Price:</span> ৳ ${plant.price}</p>
+      <p><span class="font-semibold">Description:</span> ${plant.description}</p>
+    `;
+    modal.classList.remove("hidden");
+  }
+});
 
-        modalContent.querySelector("button").addEventListener("click", () => {
-          addToCart(plant);
-          modal.classList.add("hidden");
-        });
-      }
-    });
+// close button
+document.getElementById("closeModalInside").addEventListener("click", () => {
+  modal.classList.add("hidden");
+});
 
     cardsContainer.appendChild(card);
   });
 }
 
-// add to Cart
+// Add to Cart
 function addToCart(plant) {
-  if (cart[plant.id]) {
-    cart[plant.id].quantity += 1;
-  } else {
-    cart[plant.id] = { ...plant, quantity: 1 };
-  }
+  if (cart[plant.id]) cart[plant.id].quantity += 1;
+  else cart[plant.id] = { ...plant, quantity: 1 };
+  
   updateCart();
-}
 
-// reduce or remove tree from cart
+  // alert
+  alert(`${plant.name} has been added to your cart.`);
+}
+// Remove tree from cart
 function removeFromCart(id) {
   if (cart[id]) {
     cart[id].quantity -= 1;
-    if (cart[id].quantity <= 0) {
-      delete cart[id];
-    }
+    if (cart[id].quantity <= 0) delete cart[id];
   }
   updateCart();
 }
 
-// add to cart items total
+// cart update & Total
 function updateCart() {
   cartItemsContainer.innerHTML = "";
   let total = 0;
-
   const items = Object.values(cart);
 
   if (items.length === 0) {
@@ -176,20 +167,15 @@ function updateCart() {
       </div>
       <button class="text-red-500 font-bold text-lg">&times;</button>
     `;
-
     cartItem.querySelector("button").addEventListener("click", () => removeFromCart(item.id));
-
     cartItemsContainer.appendChild(cartItem);
   });
 
-  // card total
   document.getElementById("cart-total").classList.remove("hidden");
   document.getElementById("cart-amount").textContent = `৳ ${total}`;
 }
 
-
-
-// active button section
+// Active button 
 function setActiveButton(activeBtn) {
   document.querySelectorAll(".category-btn").forEach(btn => {
     btn.classList.remove("bg-green-700", "text-white");
@@ -198,13 +184,33 @@ function setActiveButton(activeBtn) {
   activeBtn.classList.add("bg-green-700", "text-white");
 }
 
-// Close modal
-closeModal.addEventListener("click", () => modal.classList.add("hidden"));
+// Close modal 
 document.getElementById("overlay").addEventListener("click", () => modal.classList.add("hidden"));
 
-// Init load categories
+// Init
 loadCategories();
 loadAllPlants();
 
+// form requirement
+function validateForm() {
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const trees = document.getElementById("trees").value;
 
+    if (!name) {
+      alert("Please enter your name");
+      return false;
+    }
 
+    if (!email) {
+      alert("Please enter your email");
+      return false;
+    }
+
+    if (!trees) {
+      alert("Please select number of trees");
+      return false;
+    }
+
+    return true;
+  }
