@@ -143,7 +143,7 @@ function removeFromCart(id) {
   updateCart();
 }
 
-// cart update & Total
+// cart update & Total money
 function updateCart() {
   cartItemsContainer.innerHTML = "";
   let total = 0;
@@ -184,7 +184,7 @@ function setActiveButton(activeBtn) {
   activeBtn.classList.add("bg-green-700", "text-white");
 }
 
-// Close modal 
+// Close modal view
 document.getElementById("overlay").addEventListener("click", () => modal.classList.add("hidden"));
 
 // Init
