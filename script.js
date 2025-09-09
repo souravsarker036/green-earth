@@ -1,21 +1,21 @@
- // navbar mobile responsive link view
+// navbar menu btn
 const menuBtn = document.getElementById('menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    menuBtn.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
+const mobileMenu = document.getElementById('mobile-menu');
+menuBtn.addEventListener('click', () => {
+  mobileMenu.classList.toggle('hidden');
 });
 
 // api section
-
 const cardsContainer = document.getElementById("cards-container");
 const categoriesContainer = document.getElementById("categories");
 const modal = document.getElementById("modal");
 const modalContent = document.getElementById("modalContent");
 const cartItemsContainer = document.getElementById("cart-items");
+const spinner = document.getElementById("spinner");
 
 let cart = {};
 
-// Categories list
+// categories list
 const categoryList = [
   { id: "all", name: "All Trees" },
   { id: 1, name: "Fruit Trees" },
@@ -30,7 +30,7 @@ const categoryList = [
   { id: 10, name: "Aquatic Plants" },
 ];
 
-// Load Categories
+// all Categories
 function loadCategories() {
   categoryList.forEach((cat, index) => {
     const btn = document.createElement("button");
@@ -51,22 +51,39 @@ function loadCategories() {
 // all plants
 async function loadAllPlants() {
   try {
+    // spinner
+    spinner.classList.remove("hidden");
+    cardsContainer.classList.add("hidden");
+
     const res = await fetch("https://openapi.programming-hero.com/api/plants");
     const data = await res.json();
+
+    spinner.classList.add("hidden");
+    cardsContainer.classList.remove("hidden");
+
     displayPlants(data.plants);
   } catch (error) {
     console.error("Error fetching plants:", error);
+    spinner.classList.add("hidden");
   }
 }
 
-// plants by category
+// plants categories
 async function loadPlantsByCategory(id) {
   try {
+    spinner.classList.remove("hidden");
+    cardsContainer.classList.add("hidden");
+
     const res = await fetch(`https://openapi.programming-hero.com/api/category/${id}`);
     const data = await res.json();
+
+    spinner.classList.add("hidden");
+    cardsContainer.classList.remove("hidden");
+
     displayPlants(data.plants);
   } catch (error) {
     console.error("Error fetching category plants:", error);
+    spinner.classList.add("hidden");
   }
 }
 
@@ -83,9 +100,10 @@ function displayPlants(plants) {
     card.className = "bg-white rounded-lg shadow-md flex flex-col overflow-hidden transition hover:shadow-xl cursor-pointer w-full max-w-sm mx-auto h-[450px]";
 
     card.innerHTML = `
-      <img src="${plant.image}" alt="${plant.name}" class="w-full h-48 sm:h-52 object-cover rounded-t-lg">
-      <div class="flex-1 flex flex-col p-4 gap-2">
-        <h1 class="font-semibold text-center text-lg">${plant.name}</h1>
+      
+      <div class="flex-1 flex flex-col p-3 gap-2 shadow-2xl">
+      <div class="flex"><img src="${plant.image}" alt="${plant.name}" class="w-full h-48 sm:h-52  rounded-lg object-cover"></div>
+        <h1 class="font-semibold text-left text-lg">${plant.name}</h1>
         <p class="text-[12px] opacity-80 flex-1">${plant.description}</p>
         <div class="flex justify-between items-center mt-2 text-sm">
           <p class="bg-[#DCFCE7] rounded-2xl px-3 py-1">${plant.category}</p>
@@ -102,29 +120,29 @@ function displayPlants(plants) {
     });
 
     // modal view open
-   card.addEventListener("click", e => {
-  if (!e.target.closest("button")) {
-    modalContent.innerHTML = `
-      <h1 class="font-bold text-2xl mb-4">${plant.name}</h1>
-      <img src="${plant.image}" alt="${plant.name}" class="w-full h-60 object-cover rounded-lg mb-4">
-      <p><span class="font-semibold">Category:</span> ${plant.category}</p>
-      <p><span class="font-semibold">Price:</span> ৳ ${plant.price}</p>
-      <p><span class="font-semibold">Description:</span> ${plant.description}</p>
-    `;
-    modal.classList.remove("hidden");
-  }
-});
+    card.addEventListener("click", e => {
+      if (!e.target.closest("button")) {
+        modalContent.innerHTML = `
+          <h1 class="font-bold text-2xl mb-4">${plant.name}</h1>
+          <img src="${plant.image}" alt="${plant.name}" class="w-full h-60 object-cover rounded-lg mb-4">
+          <p><span class="font-semibold">Category:</span> ${plant.category}</p>
+          <p><span class="font-semibold">Price:</span> ৳ ${plant.price}</p>
+          <p><span class="font-semibold">Description:</span> ${plant.description}</p>
+        `;
+        modal.classList.remove("hidden");
+      }
+    });
 
-// close button
-document.getElementById("closeModalInside").addEventListener("click", () => {
-  modal.classList.add("hidden");
-});
+    // close button
+    document.getElementById("closeModalInside").addEventListener("click", () => {
+      modal.classList.add("hidden");
+    });
 
     cardsContainer.appendChild(card);
   });
 }
 
-// Add to Cart
+// add to Cart
 function addToCart(plant) {
   if (cart[plant.id]) cart[plant.id].quantity += 1;
   else cart[plant.id] = { ...plant, quantity: 1 };
@@ -134,7 +152,8 @@ function addToCart(plant) {
   // alert
   alert(`${plant.name} has been added to your cart.`);
 }
-// Remove tree from cart
+
+// remove tree from cart
 function removeFromCart(id) {
   if (cart[id]) {
     cart[id].quantity -= 1;
@@ -175,7 +194,7 @@ function updateCart() {
   document.getElementById("cart-amount").textContent = `৳ ${total}`;
 }
 
-// Active button 
+// active button 
 function setActiveButton(activeBtn) {
   document.querySelectorAll(".category-btn").forEach(btn => {
     btn.classList.remove("bg-green-700", "text-white");
@@ -184,33 +203,33 @@ function setActiveButton(activeBtn) {
   activeBtn.classList.add("bg-green-700", "text-white");
 }
 
-// Close modal view
+// close modal view
 document.getElementById("overlay").addEventListener("click", () => modal.classList.add("hidden"));
 
-// Init
+// init
 loadCategories();
 loadAllPlants();
 
 // form requirement
 function validateForm() {
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const trees = document.getElementById("trees").value;
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const trees = document.getElementById("trees").value;
 
-    if (!name) {
-      alert("Please enter your name");
-      return false;
-    }
-
-    if (!email) {
-      alert("Please enter your email");
-      return false;
-    }
-
-    if (!trees) {
-      alert("Please select number of trees");
-      return false;
-    }
-
-    return true;
+  if (!name) {
+    alert("Please enter your name");
+    return false;
   }
+
+  if (!email) {
+    alert("Please enter your email");
+    return false;
+  }
+
+  if (!trees) {
+    alert("Please select number of trees");
+    return false;
+  }
+
+  return true;
+}
